@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(CapsuleCollider2D))]
 public class CharacterBase : MonoBehaviour
 {
    
@@ -17,13 +18,21 @@ public class CharacterBase : MonoBehaviour
     [Header("Movement Settings")]  
     private Rigidbody2D rb;
     [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private Vector2 moveDirection;
+    [SerializeField] public Vector2 moveDirection;
+
+    SpriteController spriteController;
 
     private void Awake()
     {
         rb = gameObject.GetComponent<Rigidbody2D>();
         rb.gravityScale = 0;
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+
+        spriteController = GetComponentInChildren<SpriteController>();
+        if(spriteController == null)
+        {
+            Debug.LogError("SpriteController를 찾을 수 없습니다!");
+        } 
     }
     private void Start()
     {
@@ -52,7 +61,14 @@ public class CharacterBase : MonoBehaviour
         {
             // 입력이 없으면 멈춤
             rb.velocity = Vector2.zero;
+            moveDirection = Vector2.zero;
         }
+
+        if(spriteController)
+        {
+            spriteController.moveDirection = moveDirection;
+        }
+       
     }
 
 

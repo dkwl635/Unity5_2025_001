@@ -18,6 +18,8 @@ public class GameMode : MonoBehaviour
     public CharacterBase GetCharacter() { return characterInstance; }
     private void Start()
     {
+        GameManager.instance.SetGameMode(this);
+
         SpawnPlayer();
     }
 
