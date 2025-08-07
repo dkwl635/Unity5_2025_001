@@ -5,6 +5,15 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+
+    [Header("Character Reference")]
+    [SerializeField] private CharacterBase characterBase;
+
+    public CharacterBase GetCharacter() { return characterBase; }
+    public void SetCharacter(CharacterBase characterBase) { this.characterBase = characterBase; }
+
+
+
     void OnMove(InputValue value)
     {
         Vector2 inputVec2 = value.Get<Vector2>();
@@ -12,7 +21,10 @@ public class PlayerController : MonoBehaviour
         if (inputVec2 != null)
         {
             Debug.Log(inputVec2);
-            //moveDirection = new Vector3(inputVec2.x, 0, inputVec2.y);
+            if(characterBase != null)
+            {
+                characterBase.OnMove(inputVec2);
+            }
         }
     }
 }

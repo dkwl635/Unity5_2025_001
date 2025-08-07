@@ -46,3 +46,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerControllerPrefab: {fileID: 4441935320829111327, guid: 95af8005ec974214fa16eedd15bd272a,
     type: 3}
+  characterPrefab: {fileID: 1452962007389556762, guid: 090db125f0433994386c96fce7b533b5,
+    type: 3}
