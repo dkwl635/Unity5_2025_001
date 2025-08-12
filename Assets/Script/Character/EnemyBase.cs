@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -72,12 +74,16 @@ public class EnemyBase : MonoBehaviour
        
     }
 
-    void FindTarget()
+    void OnEnable()
     {
-        if(target == null)
+         if(target == null)
         {
             target = GameManager.instance.GetGameMode().GetCharacter().transform;
         }
+    }
+    void FindTarget()
+    {
+       
 
         if(target)
         {
