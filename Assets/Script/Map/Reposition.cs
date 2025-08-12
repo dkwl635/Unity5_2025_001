@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Reposition : MonoBehaviour
@@ -13,7 +11,12 @@ public class Reposition : MonoBehaviour
 
     const float mapSize = 20;
 
+    Collider2D coll;
 
+    void Awake()
+    {
+        coll = GetComponent<Collider2D>();
+    }
 
     void OnTriggerExit2D(Collider2D collision)
     {
@@ -40,6 +43,9 @@ public class Reposition : MonoBehaviour
                 }
                 break;
             case EnemyTag:
+                if(coll.enabled){
+                    transform.Translate(playerDir * 20 + new Vector3(UnityEngine.Random.Range(-3.0f, 3.0f), UnityEngine.Random.Range(-3.0f, 3.0f), 0));
+                }
              break;
                 
         }
