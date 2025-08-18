@@ -4,7 +4,7 @@ name: Generate README with AI
 on:
   push:
     branches:
-      - 'LHW*'
+      - 'main'
 
 permissions:
   contents: write
