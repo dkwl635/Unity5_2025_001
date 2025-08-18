@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 적을 생성하는 스포너 클래스입니다.
+/// 플레이어 주변에서 주기적으로 적을 생성하는 역할을 담당합니다.
+/// </summary>
 public class Spawner : MonoBehaviour
 {
     [Header("Pool")]
@@ -13,6 +17,10 @@ public class Spawner : MonoBehaviour
     private Transform PlayerTr;
 
     float timer;
+    
+    /// <summary>
+    /// 풀 매니저를 생성하고 스폰 포인트를 초기화합니다.
+    /// </summary>
     protected  void Awake() 
     {
         pool = Instantiate(PoolManagerPrefab, transform);
@@ -25,7 +33,9 @@ public class Spawner : MonoBehaviour
         
     }
 
-    // Update is called once per frame
+    /// <summary>
+    /// 주기적으로 적을 생성하거나 플레이어를 설정합니다.
+    /// </summary>
     void Update()
     {
         timer += Time.deltaTime;
@@ -39,6 +49,9 @@ public class Spawner : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 플레이어를 찾아 스포너의 부모로 설정합니다.
+    /// </summary>
     void SetPlayer()
     {
         if(PlayerTr)
@@ -53,6 +66,9 @@ public class Spawner : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// 랜덤한 위치에 적을 생성합니다.
+    /// </summary>
     void Spawn()
     {
         GameObject enemy = pool.Get(Random.Range(0,2));

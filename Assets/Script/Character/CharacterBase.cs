@@ -25,7 +25,16 @@ public class CharacterBase : MonoBehaviour
     [Header("Player Controller Reference")]
     [SerializeField] private PlayerController playerController;
 
+    /// <summary>
+    /// 플레이어 컨트롤러를 반환합니다.
+    /// </summary>
+    /// <returns>현재 설정된 플레이어 컨트롤러</returns>
     public PlayerController GetPlayerController() { return playerController; }
+    
+    /// <summary>
+    /// 플레이어 컨트롤러를 설정합니다.
+    /// </summary>
+    /// <param name="playerController">설정할 플레이어 컨트롤러</param>
     public void SetPlayerController(PlayerController playerController) { this.playerController = playerController; }
 
 
@@ -36,6 +45,9 @@ public class CharacterBase : MonoBehaviour
 
     SpriteController spriteController;
 
+    /// <summary>
+    /// 컴포넌트 초기화를 수행합니다.
+    /// </summary>
     private void Awake()
     {
         rb = gameObject.GetComponent<Rigidbody2D>();
@@ -53,16 +65,26 @@ public class CharacterBase : MonoBehaviour
      
     }
 
+    /// <summary>
+    /// 이동 입력을 받아 처리하는 가상 메서드입니다.
+    /// </summary>
+    /// <param name="inputVec2">이동 방향 벡터</param>
     public virtual void OnMove(Vector2 inputVec2)
     {
         moveDirection = inputVec2;
     }
 
+    /// <summary>
+    /// 물리 업데이트에서 이동을 처리합니다.
+    /// </summary>
     private void FixedUpdate()
     {
         HandleMovement();
     }
 
+    /// <summary>
+    /// 실제 이동 로직을 처리합니다.
+    /// </summary>
     private void HandleMovement()
     {
         if (moveDirection.magnitude > 0.1f)

@@ -37,20 +37,27 @@ def parse_doxygen_xml():
 
 # 3. AI에게 README.md 생성을 요청하는 프롬프트 만들기 (이 부분은 변경 없음)
 def create_prompt(docs_data):
-    prompt_content = """당신은 코드 문서를 아주 잘 작성하는 전문가입니다. 아래는 C++ 프로젝트의 Doxygen에서 추출한 데이터입니다. 이 데이터를 바탕으로 GitHub 사용자들이 이해하기 쉬운 멋진 README.md 파일을 한국어로 작성해주세요.
+    prompt_content = """당신은 코드 문서를 아주 잘 작성하는 전문가입니다. 아래 프로젝트의 Doxygen에서 추출한 데이터입니다. 이 데이터를 바탕으로 GitHub 사용자들이 이해하기 쉬운 멋진 README.md 파일을 한국어로 작성해주세요.
 
 각 클래스와 주요 함수에 대해 설명하고, 코드 블록을 적절히 사용해서 예쁘게 꾸며주세요. 프로젝트의 전반적인 소개로 시작해주세요.
+
+**중요**: 
+1. 각 기능 카테고리별로 <details> 태그를 사용해서 토글 목록을 만들어주세요
+2. 클래스들의 기능과 역할을 분석해서 적절한 카테고리로 자동 분류해주세요
+3. 각 클래스는 해당 카테고리 안에 포함시켜주세요
+4. 클래스 이름 앞에 적절한 이모지를 추가해주세요 (예: 🎮, 🎯, 🏰 등)
 
 [추출된 문서 데이터]
 """
     for data in docs_data:
-        prompt_content += f"\n### 클래스/파일: `{data['name']}`\n"
-        prompt_content += f"**설명**: {data['brief']}\n"
+        prompt_content += f"\n<details>\n<summary><b>📁 {data['name']}</b></summary>\n\n"
+        prompt_content += f"**설명**: {data['brief']}\n\n"
         prompt_content += "**주요 함수**:\n"
         for member in data['members']:
-            prompt_content += f"{member}\n"
+            prompt_content += f"• {member}\n"
+        prompt_content += "\n</details>\n"
     return prompt_content
-
+    
 # 4. Gemini API 호출 및 README.md 파일 작성 (API 호출 부분 전체 변경)
 def generate_readme(prompt):
     print("Gemini API를 호출하여 README.md 생성을 시작합니다...")

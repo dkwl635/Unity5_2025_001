@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 게임의 기본 모드를 관리하는 클래스입니다.
+/// 플레이어와 캐릭터를 생성하고 연결하는 역할을 담당합니다.
+/// </summary>
 public class GameMode : MonoBehaviour
 {
 
@@ -12,10 +16,24 @@ public class GameMode : MonoBehaviour
     [SerializeField] private GameObject characterPrefab;
 
     private PlayerController playerControllerInstance;
+    
+    /// <summary>
+    /// 플레이어 컨트롤러 인스턴스를 반환합니다.
+    /// </summary>
+    /// <returns>생성된 플레이어 컨트롤러</returns>
     public PlayerController GetPlayerController() { return playerControllerInstance; }
 
     private CharacterBase characterInstance;
+    
+    /// <summary>
+    /// 캐릭터 인스턴스를 반환합니다.
+    /// </summary>
+    /// <returns>생성된 캐릭터</returns>
     public CharacterBase GetCharacter() { return characterInstance; }
+    
+    /// <summary>
+    /// 게임 시작 시 플레이어를 생성합니다.
+    /// </summary>
     private void Start()
     {
         GameManager.instance.SetGameMode(this);
@@ -24,6 +42,9 @@ public class GameMode : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// 플레이어 컨트롤러와 캐릭터를 생성하고 연결합니다.
+    /// </summary>
     private void SpawnPlayer()
     {
         if (playerControllerPrefab == null)

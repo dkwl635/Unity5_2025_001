@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 캐릭터의 스프라이트 애니메이션과 방향을 제어하는 클래스입니다.
+/// 이동 방향에 따라 스프라이트를 좌우 반전시키고 애니메이션 속도를 조절합니다.
+/// </summary>
 [RequireComponent(typeof(Animator))]
 public class SpriteController : MonoBehaviour
 {
@@ -12,6 +16,9 @@ public class SpriteController : MonoBehaviour
 
     const string Key_Speed = "Speed";
 
+    /// <summary>
+    /// 컴포넌트 초기화를 수행합니다.
+    /// </summary>
     void Awake()
     {
         sprite = GetComponent<SpriteRenderer>();
@@ -29,6 +36,10 @@ public class SpriteController : MonoBehaviour
     {
         
     }
+    
+    /// <summary>
+    /// 애니메이션과 스프라이트 방향을 업데이트합니다.
+    /// </summary>
     void LateUpdate()
     {
         animator.SetFloat(Key_Speed , moveDirection.magnitude);

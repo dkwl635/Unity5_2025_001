@@ -3,6 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 맵 요소들의 위치를 재조정하는 클래스입니다.
+/// 플레이어가 영역을 벗어날 때 지형과 적의 위치를 재배치합니다.
+/// </summary>
 public class Reposition : MonoBehaviour
 {
     const string AreaTag = "Area";
@@ -13,11 +17,18 @@ public class Reposition : MonoBehaviour
 
     Collider2D coll;
 
+    /// <summary>
+    /// 콜라이더 컴포넌트를 초기화합니다.
+    /// </summary>
     void Awake()
     {
         coll = GetComponent<Collider2D>();
     }
 
+    /// <summary>
+    /// 트리거 영역을 벗어날 때 오브젝트의 위치를 재조정합니다.
+    /// </summary>
+    /// <param name="collision">충돌한 콜라이더</param>
     void OnTriggerExit2D(Collider2D collision)
     {
         if(!collision.CompareTag("Area"))
