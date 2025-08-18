@@ -16,12 +16,46 @@ def parse_doxygen_xml():
         tree = etree.parse('xml/index.xml')
         compounds = tree.xpath('//compound[@kind="class" or @kind="file"]')
         docs_data = []
+        class_relationships = []
+        
         for compound in compounds:
             name = compound.find('name').text
             refid = compound.get('refid')
             detail_tree = etree.parse(f'xml/{refid}.xml')
+            
+            # 기본 정보 추출
             brief_description_node = detail_tree.find('.//briefdescription/para')
             brief = brief_description_node.text if brief_description_node is not None else "설명 없음"
+            
+            # 상속 관계 추출
+            base_classes = []
+            base_compoundrefs = detail_tree.xpath('.//basecompoundref')
+            for base_ref in base_compoundrefs:
+                base_name = base_ref.text
+                if base_name:
+                    base_classes.append(base_name)
+                    class_relationships.append({
+                        'from': name,
+                        'to': base_name,
+                        'type': 'inheritance'
+                    })
+            
+            # 의존성 관계 추출 (멤버 변수나 함수 매개변수에서)
+            dependencies = []
+            member_vars = detail_tree.xpath('.//memberdef[@kind="variable"]')
+            for var in member_vars:
+                var_type_node = var.find('type/ref')
+                if var_type_node is not None and var_type_node.text:
+                    dep_class = var_type_node.text
+                    if dep_class != name:  # 자기 자신 제외
+                        dependencies.append(dep_class)
+                        class_relationships.append({
+                            'from': name,
+                            'to': dep_class,
+                            'type': 'dependency'
+                        })
+            
+            # 함수 정보 추출
             member_info = []
             members = detail_tree.xpath('.//memberdef[@kind="function"]')
             for member in members:
@@ -29,14 +63,25 @@ def parse_doxygen_xml():
                 member_brief_node = member.find('briefdescription/para')
                 member_brief = member_brief_node.text if member_brief_node is not None else ""
                 member_info.append(f"- 함수 `{member_name}`: {member_brief}")
-            docs_data.append({"name": name, "brief": brief, "members": member_info})
-        return docs_data
+            
+            docs_data.append({
+                "name": name, 
+                "brief": brief, 
+                "members": member_info,
+                "base_classes": base_classes,
+                "dependencies": dependencies
+            })
+        
+        return docs_data, class_relationships
     except FileNotFoundError:
         print("Doxygen XML 파일을 찾을 수 없습니다. Doxygen을 먼저 실행하세요.")
         return None
 
 # 3. AI에게 README.md 생성을 요청하는 프롬프트 만들기 (이 부분은 변경 없음)
-def create_prompt(docs_data):
+def create_prompt(docs_data, class_relationships):
+    # 클래스 관계도 생성을 위한 데이터 분석
+    class_names = [data['name'] for data in docs_data]
+    
     prompt_content = """당신은 코드 문서를 아주 잘 작성하는 전문가입니다. 아래 프로젝트의 Doxygen에서 추출한 데이터입니다. 이 데이터를 바탕으로 GitHub 사용자들이 이해하기 쉬운 멋진 README.md 파일을 한국어로 작성해주세요.
 
 각 클래스와 주요 함수에 대해 설명하고, 코드 블록을 적절히 사용해서 예쁘게 꾸며주세요. 프로젝트의 전반적인 소개로 시작해주세요.
@@ -46,9 +91,35 @@ def create_prompt(docs_data):
 2. 클래스들의 기능과 역할을 분석해서 적절한 카테고리로 자동 분류해주세요
 3. 각 클래스는 해당 카테고리 안에 포함시켜주세요
 4. 클래스 이름 앞에 적절한 이모지를 추가해주세요 (예: 🎮, 🎯, 🏰 등)
+5. **클래스 관계도 섹션을 추가해주세요**: 아래 클래스 관계 정보를 바탕으로 Mermaid 다이어그램을 사용하여 클래스 간의 관계를 시각적으로 표현해주세요.
 
-[추출된 문서 데이터]
+**클래스 관계도 요구사항**:
+- Mermaid 문법을 사용하여 클래스 다이어그램을 생성해주세요
+- 클래스 간의 상속 관계는 `--|>` 화살표로 표시해주세요
+- 의존성 관계는 `-->` 화살표로 표시해주세요
+- 연관 관계는 `--` 선으로 표시해주세요
+- 각 클래스의 주요 역할을 간단히 표시해주세요
+- 다이어그램은 "## 📊 클래스 관계도" 섹션에 포함시켜주세요
+
+**프로젝트 클래스 목록**:
 """
+    
+    # 클래스 목록 추가
+    for i, name in enumerate(class_names, 1):
+        prompt_content += f"{i}. {name}\n"
+    
+    # 클래스 관계 정보 추가
+    prompt_content += "\n**클래스 관계 정보**:\n"
+    if class_relationships:
+        for rel in class_relationships:
+            if rel['type'] == 'inheritance':
+                prompt_content += f"- {rel['from']} 상속 → {rel['to']}\n"
+            elif rel['type'] == 'dependency':
+                prompt_content += f"- {rel['from']} 의존 → {rel['to']}\n"
+    else:
+        prompt_content += "- 분석된 관계 정보가 없습니다. 클래스 이름과 설명을 바탕으로 추론해주세요.\n"
+    
+    prompt_content += "\n[추출된 문서 데이터]\n"
     for data in docs_data:
         prompt_content += f"\n<details>\n<summary><b>📁 {data['name']}</b></summary>\n\n"
         prompt_content += f"**설명**: {data['brief']}\n\n"
@@ -77,7 +148,8 @@ def generate_readme(prompt):
 
 # 5. 메인 실행 로직 (이 부분은 변경 없음)
 if __name__ == "__main__":
-    doxygen_data = parse_doxygen_xml()
-    if doxygen_data:
-        final_prompt = create_prompt(doxygen_data)
+    result = parse_doxygen_xml()
+    if result:
+        doxygen_data, class_relationships = result
+        final_prompt = create_prompt(doxygen_data, class_relationships)
         generate_readme(final_prompt)
