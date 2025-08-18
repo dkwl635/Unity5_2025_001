@@ -16,6 +16,7 @@ def parse_doxygen_xml():
         tree = etree.parse('xml/index.xml')
         compounds = tree.xpath('//compound[@kind="class" or @kind="file"]')
         docs_data = []
+        class_relationships = []
         
         for compound in compounds:
             name = compound.find('name').text
@@ -25,6 +26,34 @@ def parse_doxygen_xml():
             # 기본 정보 추출
             brief_description_node = detail_tree.find('.//briefdescription/para')
             brief = brief_description_node.text if brief_description_node is not None else "설명 없음"
+            
+            # 의존성 관계 추출 (멤버 변수나 함수 매개변수에서)
+            dependencies = []
+            member_vars = detail_tree.xpath('.//memberdef[@kind="variable"]')
+            for var in member_vars:
+                var_type_node = var.find('type/ref')
+                if var_type_node is not None and var_type_node.text:
+                    dep_class = var_type_node.text
+                    if dep_class != name:  # 자기 자신 제외
+                        dependencies.append(dep_class)
+                        class_relationships.append({
+                            'from': name,
+                            'to': dep_class,
+                            'type': 'dependency'
+                        })
+            
+            # 함수 매개변수에서 의존성 추출
+            functions = detail_tree.xpath('.//memberdef[@kind="function"]')
+            for func in functions:
+                params = func.xpath('.//param/type/ref')
+                for param in params:
+                    if param.text and param.text != name:
+                        dependencies.append(param.text)
+                        class_relationships.append({
+                            'from': name,
+                            'to': param.text,
+                            'type': 'dependency'
+                        })
             
             # 함수 정보 추출
             member_info = []
@@ -38,16 +67,17 @@ def parse_doxygen_xml():
             docs_data.append({
                 "name": name, 
                 "brief": brief, 
-                "members": member_info
+                "members": member_info,
+                "dependencies": dependencies
             })
         
-        return docs_data
+        return docs_data, class_relationships
     except FileNotFoundError:
         print("Doxygen XML 파일을 찾을 수 없습니다. Doxygen을 먼저 실행하세요.")
-        return None
+        return None, None
 
 # 3. AI에게 README.md 생성을 요청하는 프롬프트 만들기
-def create_prompt(docs_data):
+def create_prompt(docs_data, class_relationships):
     # 클래스 목록 추출
     class_names = [data['name'] for data in docs_data]
     
@@ -65,6 +95,27 @@ def create_prompt(docs_data):
 4. **각 클래스는 <details> 태그를 사용해서 접기/펼치기 형태로 상세 설명을 제공해주세요**
 5. 각 카테고리 및 클래스 앞에 적절한 이모지를 추가해주세요 (예: 🎮, 🎯, 🏰 등)
 6. **프로젝트 구조 섹션을 추가해주세요**: 주요 폴더와 파일들의 역할을 설명해주세요
+7. **클래스 관계도 섹션을 추가해주세요**: Mermaid 다이어그램을 사용하여 클래스 간의 관계를 시각적으로 표현해주세요
+
+**클래스 관계도 요구사항**:
+- Mermaid 문법을 사용하여 클래스 다이어그램을 생성해주세요
+- **상속 관계는 제외**하고, 의존성과 연관 관계만 표시해주세요
+- 의존성 관계는 `-->` 화살표로 표시해주세요
+- **관계 설명은 반드시 한글로 작성해주세요** (예: 관리, 생성, 공격, 참조, 사용 등)
+- 각 클래스는 박스 형태로만 표시하고, 내부 함수나 변수는 표시하지 마세요
+- 독립적인 클래스(다른 클래스와 관계가 없는)는 다이어그램에서 제외해주세요
+- 다이어그램은 "## 📊 클래스 관계도" 섹션에 포함시켜주세요
+- Mermaid 예시:
+  ```mermaid
+  classDiagram
+      class GameManager
+      class PlayerController
+      class EnemyBase
+      
+      GameManager --> PlayerController : 관리
+      GameManager --> EnemyBase : 생성
+      PlayerController --> EnemyBase : 공격
+  ```
 
 **클래스 상세 설명 요구사항**:
 - 각 클래스는 <details> 태그로 감싸서 접기/펼치기 형태로 만들어주세요
@@ -96,6 +147,7 @@ def create_prompt(docs_data):
 **README 구조 요구사항**:
 - 프로젝트 제목과 간단한 설명으로 시작
 - 프로젝트 구조 설명 (주요 폴더와 파일들의 역할)
+- **클래스 관계도** (Mermaid 다이어그램)
 - 주요 클래스별 상세 설명 (카테고리별 분류)
 
 **프로젝트 클래스 목록**:
@@ -104,6 +156,12 @@ def create_prompt(docs_data):
     # 클래스 목록 추가
     for i, name in enumerate(class_names, 1):
         prompt_content += f"{i}. {name}\n"
+    
+    # 클래스 관계 정보 추가
+    if class_relationships:
+        prompt_content += "\n**클래스 관계 정보**:\n"
+        for rel in class_relationships:
+            prompt_content += f"- {rel['from']} --> {rel['to']} ({rel['type']})\n"
     
     prompt_content += "\n[추출된 문서 데이터]\n"
     for data in docs_data:
@@ -134,7 +192,7 @@ def generate_readme(prompt):
 
 # 5. 메인 실행 로직 (이 부분은 변경 없음)
 if __name__ == "__main__":
-    result = parse_doxygen_xml()
+    result, relationships = parse_doxygen_xml()
     if result:
-        final_prompt = create_prompt(result)
+        final_prompt = create_prompt(result, relationships)
         generate_readme(final_prompt)
