@@ -120,14 +120,14 @@ def create_prompt(docs_data, class_relationships):
 - 기본적인 함수 내용은 필요없고 핵심적인 내용만 넣어서 표시해주세요
 - **중요**: 클래스 이름에 특수문자(:, -, 공백 등)가 포함된 경우 따옴표로 감싸주세요
 - **중요**: Mermaid 문법에 맞게 정확한 형식을 사용해주세요
-- **중요**: 각 클래스는 대괄호로 감싸주세요 (예: [ClassName])
+- **중요**: 각 클래스는 따옴표로 감싸주세요 (예: "ClassName")
 - **Mermaid 예시**:
   ```mermaid
   classDiagram
-    [GameManager] --> [PlayerController] : 관리
-    [PlayerController] --> [EnemyBase] : 공격
-    [Camera] --> [PlayerController] : 추적
-    [Spawner] --> [EnemyBase] : 생성
+    "GameManager" --> "PlayerController" : 관리
+    "PlayerController" --> "EnemyBase" : 공격
+    "Camera" --> "PlayerController" : 추적
+    "Spawner" --> "EnemyBase" : 생성
   ```
 
 **README 구조 요구사항**:
