@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1363795209174980583}
   - component: {fileID: 527619333501749119}
   m_Layer: 0
-  m_Name: MonsterPool
+  m_Name: Pool
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,4 +46,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabs:
   - {fileID: 2374808318743189145, guid: fdc80f48b51ae5f40af5ff4c02a79f8c, type: 3}
-  - {fileID: 737464935784677271, guid: c6f3977bb8489fd44a638288a676af77, type: 3}
+  - {fileID: 2988113509871692722, guid: a09de8a609414434caa3d3c181852fd9, type: 3}

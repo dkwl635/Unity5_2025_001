@@ -11,6 +11,14 @@ using UnityEngine.PlayerLoop;
 public class DungeonGameMode : GameMode
 {
     // Start is called before the first frame update
-   
+      [Header("Pool")]
+    [SerializeField] private PoolManager PoolManagerPrefab;
+    [HideInInspector]public PoolManager pool;
 
+    protected  void Awake() 
+    {
+        pool = Instantiate(PoolManagerPrefab, transform);
+
+      
+    }
 }

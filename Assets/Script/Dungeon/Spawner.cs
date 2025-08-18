@@ -8,15 +8,11 @@ using UnityEngine;
 /// </summary>
 public class Spawner : MonoBehaviour
 {
-    [Header("Pool")]
-    [SerializeField] private PoolManager PoolManagerPrefab;
-    [HideInInspector]public PoolManager pool;
-
+  
     public Transform[] spawnePoints;
-
+    public PoolManager pool;
     [Header("SpawnData")]
     public SpawnData[] spawnData;
-
     private Transform PlayerTr;
 
     float timer;
@@ -27,14 +23,14 @@ public class Spawner : MonoBehaviour
     
     protected  void Awake() 
     {
-        pool = Instantiate(PoolManagerPrefab, transform);
 
         spawnePoints = GetComponentsInChildren<Transform>();
     }
     // Start is called before the first frame update
     void Start()
     {
-        
+        pool = ((DungeonGameMode)GameManager.instance.GetGameMode()).pool;
+
     }
 
     void Update()
