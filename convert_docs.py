@@ -27,21 +27,18 @@ def parse_doxygen_xml():
             brief_description_node = detail_tree.find('.//briefdescription/para')
             brief = brief_description_node.text if brief_description_node is not None else "설명 없음"
             
-            # 상속 관계 추출
+            # 상속 관계는 제외하고 주요 관계만 추출
             base_classes = []
             base_compoundrefs = detail_tree.xpath('.//basecompoundref')
             for base_ref in base_compoundrefs:
                 base_name = base_ref.text
                 if base_name:
                     base_classes.append(base_name)
-                    class_relationships.append({
-                        'from': name,
-                        'to': base_name,
-                        'type': 'inheritance'
-                    })
             
-            # 의존성 관계 추출 (멤버 변수나 함수 매개변수에서)
+            # 주요 관계 추출 (멤버 변수, 함수 매개변수, 반환 타입 등)
             dependencies = []
+            
+            # 멤버 변수에서 관계 추출
             member_vars = detail_tree.xpath('.//memberdef[@kind="variable"]')
             for var in member_vars:
                 var_type_node = var.find('type/ref')
@@ -52,6 +49,18 @@ def parse_doxygen_xml():
                         class_relationships.append({
                             'from': name,
                             'to': dep_class,
+                            'type': 'dependency'
+                        })
+            
+            # 함수 매개변수에서 관계 추출
+            functions = detail_tree.xpath('.//memberdef[@kind="function"]')
+            for func in functions:
+                param_list = func.xpath('.//param/type/ref')
+                for param in param_list:
+                    if param.text and param.text != name:
+                        class_relationships.append({
+                            'from': name,
+                            'to': param.text,
                             'type': 'dependency'
                         })
             
@@ -103,12 +112,23 @@ def create_prompt(docs_data, class_relationships):
 
 **클래스 관계도 요구사항**:
 - Mermaid 문법을 사용하여 클래스 다이어그램을 생성해주세요
-- 클래스 간의 상속 관계는 `--|>` 화살표로 표시해주세요
-- 의존성 관계는 `-->` 화살표로 표시해주세요
-- 연관 관계는 `--` 선으로 표시해주세요
+- **상속 관계는 제외하고 주요 클래스들 간의 관계만 표시해주세요**
+- 의존성 관계는 `-->` 화살표로 표시해주세요 (한 클래스가 다른 클래스를 사용하는 경우)
+- 연관 관계는 `--` 선으로 표시해주세요 (클래스들이 서로 연관되어 있는 경우)
 - 각 클래스의 주요 역할을 간단히 표시해주세요
 - 다이어그램은 "## 📊 클래스 관계도" 섹션에 포함시켜주세요
 - 기본적인 함수 내용은 필요없고 핵심적인 내용만 넣어서 표시해주세요
+- **중요**: 클래스 이름에 특수문자(:, -, 공백 등)가 포함된 경우 따옴표로 감싸주세요
+- **중요**: Mermaid 문법에 맞게 정확한 형식을 사용해주세요
+- **중요**: 각 클래스는 대괄호로 감싸주세요 (예: [ClassName])
+- **Mermaid 예시**:
+  ```mermaid
+  classDiagram
+    [GameManager] --> [PlayerController] : 관리
+    [PlayerController] --> [EnemyBase] : 공격
+    [Camera] --> [PlayerController] : 추적
+    [Spawner] --> [EnemyBase] : 생성
+  ```
 
 **README 구조 요구사항**:
 - 프로젝트 제목과 간단한 설명으로 시작
@@ -117,7 +137,6 @@ def create_prompt(docs_data, class_relationships):
 - 프로젝트 구조 설명
 - 클래스 관계도 (Mermaid 다이어그램)
 - 주요 클래스별 상세 설명 (카테고리별 분류)
-- 사용법 예제 (코드 블록 포함)
 - 기여 방법
 - 라이선스 정보
 
@@ -132,12 +151,15 @@ def create_prompt(docs_data, class_relationships):
     prompt_content += "\n**클래스 관계 정보**:\n"
     if class_relationships:
         for rel in class_relationships:
-            if rel['type'] == 'inheritance':
-                prompt_content += f"- {rel['from']} 상속 → {rel['to']}\n"
-            elif rel['type'] == 'dependency':
+            if rel['type'] == 'dependency':
                 prompt_content += f"- {rel['from']} 의존 → {rel['to']}\n"
     else:
         prompt_content += "- 분석된 관계 정보가 없습니다. 클래스 이름과 설명을 바탕으로 추론해주세요.\n"
+    
+    prompt_content += "\n**Mermaid 다이어그램 생성 시 주의사항**:\n"
+    prompt_content += "- 클래스 이름에 특수문자가 있으면 따옴표로 감싸주세요\n"
+    prompt_content += "- 정확한 Mermaid 문법을 사용해주세요\n"
+    prompt_content += "- classDiagram 키워드로 시작해주세요\n"
     
     prompt_content += "\n[추출된 문서 데이터]\n"
     for data in docs_data:
