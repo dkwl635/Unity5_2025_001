@@ -28,12 +28,12 @@ doxygen Doxyfile
 ## 📁 설정된 경로
 
 ### 입력 디렉토리
-- `Assets/Scripts/` - Unity 스크립트 파일들
+- `Assets/Script/` - Unity 스크립트 파일들
 
 ### 제외 디렉토리
-- `Assets/Scripts/Editor/` - Unity 에디터 스크립트
-- `Assets/Scripts/Plugins/` - 플러그인 스크립트
-- `Assets/Scripts/ThirdParty/` - 서드파티 스크립트
+- `Assets/Script/Editor/` - Unity 에디터 스크립트
+- `Assets/Script/Plugins/` - 플러그인 스크립트
+- `Assets/Script/ThirdParty/` - 서드파티 스크립트
 
 ### 출력 디렉토리
 - `Documentation/` - 생성된 문서 파일들
@@ -105,7 +105,7 @@ public bool AttackEnemy(Enemy target, int damage)
 3. 명령 프롬프트에서 `doxygen --version` 실행하여 설치 확인
 
 ### 문서가 생성되지 않는 경우
-1. `Assets/Scripts/` 폴더에 C# 파일이 있는지 확인
+1. `Assets/Script/` 폴더에 C# 파일이 있는지 확인
 2. C# 파일에 적절한 주석이 있는지 확인
 3. Doxyfile이 프로젝트 루트에 있는지 확인
 

@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 echo Unity 프로젝트 스크립트 문서화를 시작합니다...
 echo.
 
