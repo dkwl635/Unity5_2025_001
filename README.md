@@ -1,155 +1,121 @@
-# 🎮 던전 탐험 게임 프로젝트
+# 🎮 던전 게임 프로젝트
 
-이 프로젝트는 유니티 엔진으로 개발된 던전 탐험 게임의 기본 프레임워크를 제공합니다. 플레이어 캐릭터 조작, 적 AI, 게임 상태 관리, 카메라 시스템, 오브젝트 풀링 등 핵심 기능들을 구현하고 있습니다.
+이 프로젝트는 유니티 엔진을 사용하여 개발된 간단한 2D 던전 게임입니다. 플레이어는 캐릭터를 조작하여 던전을 탐험하고, 적들과 전투를 벌입니다. 이 README 파일은 프로젝트의 주요 클래스와 기능에 대한 개요를 제공합니다.
 
-<details>
-<summary><b>🕹️ 플레이어 & 입력</b></summary>
+## 🕹️ 게임 플레이
 
-<details>
-<summary><b>🎮 <code>PlayerController</code></b></summary>
+플레이어는 입력을 통해 캐릭터를 조작하고, 적들을 물리치며 던전을 탐험합니다. 카메라는 플레이어 캐릭터를 따라가며, 게임의 진행 상황은 `GameManager`를 통해 관리됩니다.
 
-**설명**: 이동 입력을 받아 캐릭터에 전달하는 역할을 합니다.
-
-**주요 함수**:
-- `GetCharacter()`: 연결된 캐릭터 객체를 반환합니다.
-- `SetCharacter()`: 캐릭터 객체를 설정합니다.
-- `OnMove()`: 이동 입력을 받아 캐릭터의 `OnMove()` 함수를 호출합니다.
-
-```C#
-// PlayerController.cs 예시
-public void OnMove(Vector2 direction) {
-    _character.OnMove(direction);
-}
-```
-
-</details>
+## 🗂️ 클래스 구조
 
 <details>
-<summary><b>🧍 <code>CharacterBase</code></b></summary>
+<summary><b>🎮 캐릭터 & 플레이어</b></summary>
 
-**설명**: 이동 입력을 받아 처리하는 기본 캐릭터 클래스입니다.  `OnMove` 함수는 자식 클래스에서 오버라이드하여 다양한 이동 로직을 구현할 수 있도록 설계되었습니다.
-
-**주요 함수**:
-- `GetPlayerController()`: 연결된 플레이어 컨트롤러 객체를 반환합니다.
-- `SetPlayerController()`: 플레이어 컨트롤러 객체를 설정합니다.
-- `OnMove(Vector2 direction)`: 이동 입력을 받아 처리하는 가상 함수입니다.
-- `HandleMovement()`: 실제 이동 로직을 처리합니다.  자식 클래스에서 오버라이드 가능합니다.
-
-```C#
-// CharacterBase.cs 예시
-public virtual void OnMove(Vector2 direction) {
-    // 이동 로직 구현 (자식 클래스에서 오버라이드)
-    HandleMovement(direction);
-}
-```
-
-</details>
-
-</details>
-
-<details>
-<summary><b>👾 적 AI</b></summary>
-
-<details>
-<summary><b>😈 <code>EnemyBase</code></b></summary>
-
-**설명**: 적의 이동 로직을 처리하는 기본 클래스입니다.
-
-**주요 함수**:
-- `Movement()`: 적의 이동 로직을 처리합니다.
-- `FindTarget()`: 플레이어 타겟을 찾아 이동 방향을 설정합니다.
-- `OnMove(Vector2 direction)`: 이동 입력을 받아 처리하는 가상 함수입니다. (CharacterBase 상속)
-
-
-</details>
-
-<details>
-<summary><b>🐾 <code>Spawner</code></b></summary>
-
-**설명**: 랜덤한 위치에 적을 생성합니다.  플레이어를 찾아 스포너의 부모로 설정하여 플레이어를 따라다니도록 합니다.
-
-**주요 함수**:
-- `SetPlayer()`: 플레이어를 찾아 스포너의 부모로 설정합니다.
-- `Spawn()`: 랜덤한 위치에 적을 생성합니다.
-
-</details>
+* 🧍 **CharacterBase**: 모든 캐릭터의 기본 클래스입니다. 이동 로직을 포함하며, `PlayerController`에서 입력을 받아 `SpriteController`를 통해 애니메이션을 처리합니다.
+* 👾 **EnemyBase**: 적 캐릭터의 기본 클래스로, `CharacterBase`를 상속받아 적 특유의 이동 및 공격 로직을 구현합니다. `SpriteController`를 사용하여 애니메이션을 처리합니다.
+* 🕹️ **PlayerController**: 플레이어의 입력을 받아 `CharacterBase`에 전달합니다.
 
 </details>
 
 <details>
 <summary><b>🌍 게임 관리</b></summary>
 
-<details>
-<summary><b>🏰 <code>GameManager</code></b></summary>
-
-**설명**: 게임의 전역 상태를 관리하는 싱글톤 매니저입니다. 현재 게임 모드를 관리하고 다른 시스템에서 접근할 수 있도록 합니다.
-
-**주요 함수**:
-- `GetGameMode()`: 현재 게임 모드를 반환합니다.
-- `SetGameMode()`: 게임 모드를 설정합니다.
+* 🏰 **GameManager**: 게임의 전역 상태를 관리하는 싱글톤 매니저입니다. 현재 게임 모드(`GameMode`)를 관리하고 다른 시스템에서 접근할 수 있도록 합니다.
+* 🗺️ **GameMode**: 플레이어 컨트롤러와 캐릭터를 생성하고 연결합니다. `CharacterBase`와 `PlayerController` 인스턴스를 생성하고 관리합니다.
+* 🏯 **DungeonGameMode**: `GameMode`를 상속받아 던전 게임 모드에 특화된 기능을 제공합니다.
 
 </details>
-
-<details>
-<summary><b>🚩 <code>GameMode</code></b></summary>
-
-**설명**: 플레이어 컨트롤러와 캐릭터를 생성하고 연결합니다. 게임 모드의 기본 기능을 제공합니다.
-
-**주요 함수**:
-- `GetPlayerController()`: 플레이어 컨트롤러를 반환합니다.
-- `GetCharacter()`: 플레이어 캐릭터를 반환합니다.
-- `SpawnPlayer()`: 플레이어 컨트롤러와 캐릭터를 생성하고 연결합니다.
-
-</details>
-
-<details>
-<summary><b>🏯 <code>DungeonGameMode</code></b></summary>
-
-**설명**: 던전 게임 모드를 관리하는 클래스입니다. `GameMode`를 상속받아 던전 특화 기능을 제공합니다. (추가적인 함수 설명 필요)
-
-</details>
-
-</details>
-
 
 <details>
 <summary><b>🛠️ 유틸리티</b></summary>
 
-<details>
-<summary><b>📦 <code>PoolManager</code></b></summary>
-
-**설명**: 오브젝트 풀링을 관리하는 클래스입니다. 지정된 인덱스의 비활성화된 오브젝트를 반환하거나 새로 생성합니다.
-
-**주요 함수**:
-- `Get(int index)`: 지정된 인덱스의 비활성화된 오브젝트를 반환하거나, 없으면 새로 생성합니다.
+* 📦 **PoolManager**: 오브젝트 풀링을 관리하는 클래스입니다. 필요에 따라 오브젝트를 생성하고 재활용하여 성능을 향상시킵니다. `Spawner`에서 적 생성에 사용됩니다.
+* 🔄 **Reposition**: 트리거 영역을 벗어난 오브젝트의 위치를 재조정합니다.
+* 🎥 **SetCameraTarget**: Cinemachine 카메라의 타겟을 플레이어 캐릭터로 설정합니다.
+* 🎯 **Spawner**: `PoolManager`를 사용하여 랜덤한 위치에 적을 생성합니다. 플레이어를 찾아 스포너의 부모로 설정합니다.
+* 🖼️ **SpriteController**: 캐릭터의 애니메이션과 스프라이트 방향을 업데이트합니다. `CharacterBase`와 `EnemyBase`에서 사용됩니다.
 
 </details>
 
-<details>
-<summary><b>➡️ <code>Reposition</code></b></summary>
 
-**설명**: 트리거 영역을 벗어날 때 오브젝트의 위치를 재조정합니다.
+## 📊 클래스 관계도
 
-**주요 함수**:
-- `OnTriggerExit2D()`: 트리거 영역을 벗어날 때 오브젝트의 위치를 재조정합니다.
+```mermaid
+classDiagram
+    CharacterBase --|> MonoBehaviour : 상속
+    CharacterBase --> PlayerController : 의존
+    CharacterBase --> SpriteController : 의존
+    DungeonGameMode --|> GameMode : 상속
+    EnemyBase --|> MonoBehaviour : 상속
+    EnemyBase --> SpriteController : 의존
+    GameManager --|> MonoBehaviour : 상속
+    GameManager --> GameMode : 의존
+    GameMode --|> MonoBehaviour : 상속
+    GameMode --> PlayerController : 의존
+    GameMode --> CharacterBase : 의존
+    PlayerController --|> MonoBehaviour : 상속
+    PlayerController --> CharacterBase : 의존
+    PoolManager --|> MonoBehaviour : 상속
+    Reposition --|> MonoBehaviour : 상속
+    SetCameraTarget --|> MonoBehaviour : 상속
+    Spawner --|> MonoBehaviour : 상속
+    Spawner --> PoolManager : 의존
+    SpriteController --|> MonoBehaviour : 상속
 
-</details>
+    class CharacterBase {
+        <<추상 클래스>>
+        -OnMove()
+        -HandleMovement()
+    }
+    class EnemyBase {
+        -Movement()
+        -FindTarget()
+    }
+    class PlayerController {
+        -OnMove()
+    }
+    class GameManager {
+        -GetGameMode()
+        -SetGameMode()
+    }
+    class GameMode {
+        -SpawnPlayer()
+    }
+    class DungeonGameMode {
+    }
+    class PoolManager {
+        -Get()
+    }
+    class Reposition {
+        -OnTriggerExit2D()
+    }
+    class SetCameraTarget {
+    }
+    class Spawner {
+        -Spawn()
+    }
+    class SpriteController {
+        -LateUpdate()
+    }
+    class MonoBehaviour {
+    }
 
-<details>
-<summary><b>🎥 <code>SetCameraTarget</code></b></summary>
+```
 
-**설명**: Cinemachine 카메라의 타겟을 설정하는 클래스입니다. 플레이어 캐릭터를 카메라의 추적 대상으로 설정합니다.
 
-</details>
+## ⚙️ 설치 및 실행
 
-<details>
-<summary><b>💅 <code>SpriteController</code></b></summary>
+1. 유니티 엔진 (권장 버전: 2021.3 이상) 을 설치합니다.
+2. 프로젝트를 클론하거나 다운로드합니다.
+3. 유니티 엔진에서 프로젝트를 엽니다.
+4. 게임 씬을 열고 실행합니다.
 
-**설명**: 애니메이션과 스프라이트 방향을 업데이트합니다.
 
-**주요 함수**:
-- `LateUpdate()`: 애니메이션과 스프라이트 방향을 업데이트합니다.
+## 🤝 기여 방법
 
-</details>
+이 프로젝트는 오픈 소스이며 기여를 환영합니다. 버그 보고, 기능 요청 또는 코드 기여는 언제든지 환영합니다.
 
-</details>
+
+## 📝 라이선스
+
+이 프로젝트는 MIT 라이선스에 따라 배포됩니다. 자세한 내용은 LICENSE 파일을 참조하십시오.
