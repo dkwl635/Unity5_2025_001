@@ -2,6 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 캐릭터의 기본 기능을 제공하는 추상 클래스입니다.
+/// 플레이어와 적 캐릭터 모두가 상속받아 사용할 수 있는 공통 기능들을 포함합니다.
+/// 
+/// 주요 기능:
+/// - 기본적인 이동 시스템 (Rigidbody2D 기반)
+/// - 스프라이트 컨트롤러를 통한 애니메이션 연동
+/// - 플레이어 컨트롤러 참조 관리
+/// - 중력 없이 2D 평면에서의 이동 처리
+/// 
+/// 필수 컴포넌트:
+/// - Rigidbody2D: 물리 기반 이동을 위해 필요
+/// - CapsuleCollider2D: 충돌 감지를 위해 필요
+/// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CapsuleCollider2D))]
 public class CharacterBase : MonoBehaviour
