@@ -17,9 +17,6 @@ public class Reposition : MonoBehaviour
 
     Collider2D coll;
 
-    /// <summary>
-    /// 콜라이더 컴포넌트를 초기화합니다.
-    /// </summary>
     void Awake()
     {
         coll = GetComponent<Collider2D>();

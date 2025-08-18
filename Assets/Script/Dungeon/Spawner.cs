@@ -18,9 +18,6 @@ public class Spawner : MonoBehaviour
 
     float timer;
     
-    /// <summary>
-    /// 풀 매니저를 생성하고 스폰 포인트를 초기화합니다.
-    /// </summary>
     protected  void Awake() 
     {
         pool = Instantiate(PoolManagerPrefab, transform);
@@ -33,9 +30,6 @@ public class Spawner : MonoBehaviour
         
     }
 
-    /// <summary>
-    /// 주기적으로 적을 생성하거나 플레이어를 설정합니다.
-    /// </summary>
     void Update()
     {
         timer += Time.deltaTime;

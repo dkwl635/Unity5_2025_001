@@ -13,9 +13,6 @@ public class PoolManager : MonoBehaviour
 
     List<GameObject>[] pools;
 
-    /// <summary>
-    /// 풀 배열을 초기화합니다.
-    /// </summary>
     void Awake()
     {
         pools = new List<GameObject>[prefabs.Length];

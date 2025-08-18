@@ -21,9 +21,6 @@ public class EnemyBase : MonoBehaviour
 
     Transform target;
 
-    /// <summary>
-    /// 컴포넌트 초기화를 수행합니다.
-    /// </summary>
     private void Awake()
     {
         rb = gameObject.GetComponent<Rigidbody2D>();
@@ -37,9 +34,6 @@ public class EnemyBase : MonoBehaviour
         } 
     }
 
-    /// <summary>
-    /// 게임 시작 시 적을 활성화합니다.
-    /// </summary>
     private void Start()
     {
         isLive = true;
@@ -54,9 +48,6 @@ public class EnemyBase : MonoBehaviour
         moveDirection = inputVec2;
     }
 
-    /// <summary>
-    /// 물리 업데이트에서 타겟 찾기와 이동을 처리합니다.
-    /// </summary>
     private void FixedUpdate()
     {
         FindTarget();
@@ -94,9 +85,6 @@ public class EnemyBase : MonoBehaviour
        
     }
 
-    /// <summary>
-    /// 오브젝트가 활성화될 때 타겟을 설정합니다.
-    /// </summary>
     void OnEnable()
     {
          if(target == null)

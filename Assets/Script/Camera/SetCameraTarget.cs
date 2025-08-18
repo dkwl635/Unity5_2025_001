@@ -11,9 +11,6 @@ public class SetCameraTarget : MonoBehaviour
 {
     [SerializeField]public CinemachineVirtualCamera Camera;
 
-    /// <summary>
-    /// 카메라의 타겟을 플레이어 캐릭터로 설정합니다.
-    /// </summary>
     void FixedUpdate()
     {
         if(Camera && Camera.Follow)

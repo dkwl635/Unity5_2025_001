@@ -13,21 +13,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameMode curGameMode;
     
-    /// <summary>
-    /// 현재 게임 모드를 반환합니다.
-    /// </summary>
-    /// <returns>현재 설정된 게임 모드</returns>
     public GameMode GetGameMode(){return curGameMode;}
-    
-    /// <summary>
-    /// 게임 모드를 설정합니다.
-    /// </summary>
-    /// <param name="gameMode">설정할 게임 모드</param>
     public void SetGameMode(GameMode gameMode){curGameMode = gameMode;}
 
-    /// <summary>
-    /// 싱글톤 인스턴스를 초기화합니다.
-    /// </summary>
     void Awake()
     {
         instance = this;

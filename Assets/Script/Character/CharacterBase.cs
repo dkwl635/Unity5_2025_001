@@ -25,16 +25,7 @@ public class CharacterBase : MonoBehaviour
     [Header("Player Controller Reference")]
     [SerializeField] private PlayerController playerController;
 
-    /// <summary>
-    /// 플레이어 컨트롤러를 반환합니다.
-    /// </summary>
-    /// <returns>현재 설정된 플레이어 컨트롤러</returns>
     public PlayerController GetPlayerController() { return playerController; }
-    
-    /// <summary>
-    /// 플레이어 컨트롤러를 설정합니다.
-    /// </summary>
-    /// <param name="playerController">설정할 플레이어 컨트롤러</param>
     public void SetPlayerController(PlayerController playerController) { this.playerController = playerController; }
 
 
@@ -45,9 +36,6 @@ public class CharacterBase : MonoBehaviour
 
     SpriteController spriteController;
 
-    /// <summary>
-    /// 컴포넌트 초기화를 수행합니다.
-    /// </summary>
     private void Awake()
     {
         rb = gameObject.GetComponent<Rigidbody2D>();
@@ -74,9 +62,6 @@ public class CharacterBase : MonoBehaviour
         moveDirection = inputVec2;
     }
 
-    /// <summary>
-    /// 물리 업데이트에서 이동을 처리합니다.
-    /// </summary>
     private void FixedUpdate()
     {
         HandleMovement();

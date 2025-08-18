@@ -13,16 +13,7 @@ public class PlayerController : MonoBehaviour
     [Header("Character Reference")]
     [SerializeField] private CharacterBase characterBase;
 
-    /// <summary>
-    /// 캐릭터를 반환합니다.
-    /// </summary>
-    /// <returns>현재 설정된 캐릭터</returns>
     public CharacterBase GetCharacter() { return characterBase; }
-    
-    /// <summary>
-    /// 캐릭터를 설정합니다.
-    /// </summary>
-    /// <param name="characterBase">설정할 캐릭터</param>
     public void SetCharacter(CharacterBase characterBase) { this.characterBase = characterBase; }
 
 

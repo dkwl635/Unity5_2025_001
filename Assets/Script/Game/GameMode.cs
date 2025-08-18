@@ -17,23 +17,12 @@ public class GameMode : MonoBehaviour
 
     private PlayerController playerControllerInstance;
     
-    /// <summary>
-    /// 플레이어 컨트롤러 인스턴스를 반환합니다.
-    /// </summary>
-    /// <returns>생성된 플레이어 컨트롤러</returns>
     public PlayerController GetPlayerController() { return playerControllerInstance; }
 
     private CharacterBase characterInstance;
     
-    /// <summary>
-    /// 캐릭터 인스턴스를 반환합니다.
-    /// </summary>
-    /// <returns>생성된 캐릭터</returns>
     public CharacterBase GetCharacter() { return characterInstance; }
     
-    /// <summary>
-    /// 게임 시작 시 플레이어를 생성합니다.
-    /// </summary>
     private void Start()
     {
         GameManager.instance.SetGameMode(this);

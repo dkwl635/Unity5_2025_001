@@ -16,9 +16,6 @@ public class SpriteController : MonoBehaviour
 
     const string Key_Speed = "Speed";
 
-    /// <summary>
-    /// 컴포넌트 초기화를 수행합니다.
-    /// </summary>
     void Awake()
     {
         sprite = GetComponent<SpriteRenderer>();
