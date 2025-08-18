@@ -13,13 +13,13 @@ genai.configure(api_key=api_key) # 변경된 부분: API 키 설정 방식
 # 2. Doxygen XML 파일에서 데이터 추출하기 (이 부분은 변경 없음)
 def parse_doxygen_xml():
     try:
-        tree = etree.parse('xml/index.xml')
+        tree = etree.parse('Documentation/xml/index.xml')
         compounds = tree.xpath('//compound[@kind="class" or @kind="file"]')
         docs_data = []
         for compound in compounds:
             name = compound.find('name').text
             refid = compound.get('refid')
-            detail_tree = etree.parse(f'xml/{refid}.xml')
+            detail_tree = etree.parse(f'Documentation/xml/{refid}.xml')
             brief_description_node = detail_tree.find('.//briefdescription/para')
             brief = brief_description_node.text if brief_description_node is not None else "설명 없음"
             member_info = []
