@@ -17,6 +17,14 @@ public class EnemyBase : MonoBehaviour
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] public Vector2 moveDirection;
     [SerializeField] private bool isLive = true;
+    
+    public RuntimeAnimatorController[] animCon;
+    public float speed;
+    public float health;
+    public float maxHealth;
+
+
+
     SpriteController spriteController;
 
     Transform target;
@@ -90,6 +98,8 @@ public class EnemyBase : MonoBehaviour
          if(target == null)
         {
             target = GameManager.instance.GetGameMode().GetCharacter().transform;
+            isLive = true;
+            health = maxHealth;
         }
     }
     
@@ -98,12 +108,19 @@ public class EnemyBase : MonoBehaviour
     /// </summary>
     void FindTarget()
     {
-       
-
         if(target)
         {
             moveDirection = target.position - this.transform.position;
             moveDirection = moveDirection.normalized;
         }
+    }
+
+    public void Init(SpawnData data)
+    {
+        spriteController.animator.runtimeAnimatorController = animCon[data.spriteType];
+        moveSpeed = data.speed;
+        maxHealth = data.health;
+        health = maxHealth;
+     
     }
 }

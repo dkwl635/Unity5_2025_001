@@ -11,7 +11,7 @@ public class SpriteController : MonoBehaviour
 {
 
     private SpriteRenderer sprite;
-    private Animator animator;
+    [HideInInspector] public Animator animator;
     [SerializeField] public Vector2 moveDirection;
 
     const string Key_Speed = "Speed";

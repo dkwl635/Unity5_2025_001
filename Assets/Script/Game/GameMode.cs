@@ -15,6 +15,10 @@ public class GameMode : MonoBehaviour
     [Header("Character")]
     [SerializeField] private GameObject characterPrefab;
 
+
+    [Header("GameState")]
+    [SerializeField] private GameObject gameStatePrefab;
+
     private PlayerController playerControllerInstance;
     
     public PlayerController GetPlayerController() { return playerControllerInstance; }
@@ -22,19 +26,26 @@ public class GameMode : MonoBehaviour
     private CharacterBase characterInstance;
     
     public CharacterBase GetCharacter() { return characterInstance; }
+
+    private GameState gameStateInstance;
+
+    public GameState GetGameState() { return gameStateInstance; }
     
+    private void Awake() 
+    {
+    
+    }
     private void Start()
     {
-        GameManager.instance.SetGameMode(this);
-
-        SpawnPlayer();
+         GameManager.instance.SetGameMode(this);
+        SpawnGameInfo();
     }
 
 
     /// <summary>
     /// 플레이어 컨트롤러와 캐릭터를 생성하고 연결합니다.
     /// </summary>
-    private void SpawnPlayer()
+    private void SpawnGameInfo()
     {
         if (playerControllerPrefab == null)
         {
@@ -70,6 +81,21 @@ public class GameMode : MonoBehaviour
             {
                 characterInstance.SetPlayerController(playerControllerInstance);
                 playerControllerInstance.SetCharacter(characterInstance);
+            }
+        }
+
+        if(gameStatePrefab == null)
+        {
+            Debug.Log("No gameStatePrefab");
+        }
+        else
+        {
+            Vector3 spawnPos = Vector3.zero;
+            GameObject gameStateGO = Instantiate(gameStatePrefab, spawnPos, Quaternion.identity);
+            gameStateInstance = gameStateGO.GetComponent<GameState>();
+            if(gameStateInstance == null)
+            {
+                Debug.LogError("PlayerPrefab_GameState_NULL");
             }
         }
     }

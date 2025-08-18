@@ -14,9 +14,16 @@ public class Spawner : MonoBehaviour
 
     public Transform[] spawnePoints;
 
+    [Header("SpawnData")]
+    public SpawnData[] spawnData;
+
     private Transform PlayerTr;
 
     float timer;
+    int level = 0;
+    int maxLevel = 2;
+
+
     
     protected  void Awake() 
     {
@@ -33,7 +40,13 @@ public class Spawner : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime;
-        if(timer > 0.2f)
+        
+       
+        level = Mathf.FloorToInt(GameManager.instance.GetGameMode().GetGameState().gameTime/ 10.0f);
+        level = Mathf.Min(level, maxLevel);
+        
+
+        if(timer > spawnData[level].spawnTime)
         {
             timer = 0;
             if(PlayerTr)
@@ -65,11 +78,23 @@ public class Spawner : MonoBehaviour
     /// </summary>
     void Spawn()
     {
-        GameObject enemy = pool.Get(Random.Range(0,2));
+        GameObject enemy = pool.Get(0);
         if(enemy)
         {
             enemy.transform.position = spawnePoints[Random.Range(1, spawnePoints.Length)].position;
+            enemy.GetComponent<EnemyBase>().Init(spawnData[level]);
         }
     }
+
+}
+
+
+[System.Serializable]
+public class SpawnData
+{
+    public int spriteType;
+    public float spawnTime;
+    public int health;
+    public float speed;
 
 }

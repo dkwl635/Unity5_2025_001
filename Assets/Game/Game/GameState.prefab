@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &9152693064354014969
+--- !u!1 &8782140524691797828
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4297817570008969336}
-  - component: {fileID: 5890810935858945647}
+  - component: {fileID: 397362114740089007}
+  - component: {fileID: 769881022581458864}
   m_Layer: 0
-  m_Name: GameMode
+  m_Name: GameState
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4297817570008969336
+--- !u!4 &397362114740089007
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9152693064354014969}
+  m_GameObject: {fileID: 8782140524691797828}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -32,21 +32,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5890810935858945647
+--- !u!114 &769881022581458864
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9152693064354014969}
+  m_GameObject: {fileID: 8782140524691797828}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 268e71abf1ad59a4b9fc487ce50080ab, type: 3}
+  m_Script: {fileID: 11500000, guid: e2dfac1984165a24abf97be8407b1153, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerControllerPrefab: {fileID: 4441935320829111327, guid: 95af8005ec974214fa16eedd15bd272a,
-    type: 3}
-  characterPrefab: {fileID: 1452962007389556762, guid: 090db125f0433994386c96fce7b533b5,
-    type: 3}
-  gameStatePrefab: {fileID: 8782140524691797828, guid: af89ecb54b1e9d74488910d292d89e7b,
-    type: 3}
+  gameTime: 0
+  maxGameTime: 20
