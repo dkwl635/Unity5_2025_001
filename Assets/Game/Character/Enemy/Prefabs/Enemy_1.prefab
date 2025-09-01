@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6585790342380999955}
   - component: {fileID: 6469653973186223000}
   - component: {fileID: 4290665559082283576}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Enemy_1
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -143,7 +143,7 @@ GameObject:
   - component: {fileID: 7936354523055832963}
   - component: {fileID: 936550602489224935}
   - component: {fileID: 7286310679219742066}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -250,4 +250,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06814810c1f03e54a9802992aec209ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animator: {fileID: 0}
   moveDirection: {x: 0, y: 0}
