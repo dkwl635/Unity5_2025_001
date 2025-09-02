@@ -18,6 +18,7 @@ using UnityEngine;
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CapsuleCollider2D))]
+[RequireComponent(typeof(Scanner))]
 public class CharacterBase : MonoBehaviour
 {
    
@@ -36,11 +37,14 @@ public class CharacterBase : MonoBehaviour
 
     SpriteController spriteController;
 
+    public Scanner scanner;
+
     private void Awake()
     {
         rb = gameObject.GetComponent<Rigidbody2D>();
         rb.gravityScale = 0;
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        scanner = GetComponent<Scanner>();
 
         spriteController = GetComponentInChildren<SpriteController>();
         if(spriteController == null)

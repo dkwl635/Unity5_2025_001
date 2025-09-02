@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
+    CharacterBase player;
+
     public int id;
     public int prefabId;
     public float damage;
@@ -13,6 +15,12 @@ public class Weapon : MonoBehaviour
     
     public PoolManager pool;
 
+    float timer;
+
+    void Awake()
+    {
+        player = GetComponentInParent<CharacterBase>();
+    }
     void Start()
     {
         pool = ((DungeonGameMode)GameManager.instance.GetGameMode()).pool;
@@ -25,6 +33,14 @@ public class Weapon : MonoBehaviour
         {
             case 0:
                 transform.Rotate(Vector3.back * speed * Time.deltaTime);
+                break;
+            case 1:
+                timer += Time.deltaTime;
+                if(timer > speed)
+                {
+                    timer = 0;
+                    Fire();
+                }
                 break;
             default:
                 break;
@@ -54,6 +70,9 @@ public class Weapon : MonoBehaviour
             case 0:
                 speed = -150.0f;
                 Batch();
+                break;
+            case 1:
+                speed = 0.3f;
                 break;
             default:
                 break;
@@ -86,9 +105,26 @@ public class Weapon : MonoBehaviour
             bullet.Rotate(rotVec);
             bullet.Translate(Vector3.up * 1.5f);
 
-           bullet.GetComponent<Bullet>().Init(damage, -1); // -1 is infinite
+            bullet.GetComponent<Bullet>().Init(damage, -1, Vector3.zero); // -1 is infinite
 
         }
+    }
+
+    void Fire()
+    {
+        if(!player.scanner.nearestTarget)
+            return;
+
+
+        Vector3 targetPos = player.scanner.nearestTarget.position;
+        Vector3 dir = (targetPos - transform.position).normalized;
+
+        Transform bullet = pool.Get(prefabId).transform;
+        bullet.position = transform.position;
+        bullet.rotation = Quaternion.FromToRotation(Vector3.up, dir);
+        bullet.GetComponent<Bullet>().Init(damage, count, dir); // -1 is infinitebu
+
+
     }
 
 }
