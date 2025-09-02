@@ -14,6 +14,7 @@ public class EnemyBase : MonoBehaviour
 {
     [Header("Movement Settings")]  
     private Rigidbody2D rb;
+    Collider2D coll;
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] public Vector2 moveDirection;
     [SerializeField] private bool isLive = true;
@@ -28,6 +29,7 @@ public class EnemyBase : MonoBehaviour
     SpriteController spriteController;
 
     Transform target;
+    WaitForFixedUpdate wait;
 
     private void Awake()
     {
@@ -35,16 +37,25 @@ public class EnemyBase : MonoBehaviour
         rb.gravityScale = 0;
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
 
+        coll = GetComponent<Collider2D>();
+
         spriteController = GetComponentInChildren<SpriteController>();
         if(spriteController == null)
         {
             Debug.LogError("SpriteController를 찾을 수 없습니다!");
         } 
+
+        wait = new WaitForFixedUpdate();
     }
 
     private void Start()
     {
         isLive = true;
+
+        if(spriteController)
+        {
+            spriteController.OnDieEvent += Dead;
+        }
     }
 
     /// <summary>
@@ -67,7 +78,7 @@ public class EnemyBase : MonoBehaviour
     /// </summary>
     private void Movement()
     {
-        if(isLive == false)
+        if(isLive == false || spriteController.animator.GetCurrentAnimatorStateInfo(0).IsName("Hit"))
         {
             rb.velocity = Vector2.zero;
             return;
@@ -98,9 +109,19 @@ public class EnemyBase : MonoBehaviour
          if(target == null)
         {
             target = GameManager.instance.GetGameMode().GetCharacter().transform;
+        }
             isLive = true;
             health = maxHealth;
-        }
+
+            isLive = true;
+            coll.enabled = true;
+            rb.simulated = true;
+            
+            if(!spriteController.sprite ||! spriteController.animator)
+                return;
+            spriteController.sprite.sortingOrder = 2;
+            spriteController.animator.SetBool("Dead",false);
+        
     }
     
     /// <summary>
@@ -127,24 +148,50 @@ public class EnemyBase : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if(!collision.CompareTag("Bullet"))
+        if(!collision.CompareTag("Bullet") || !isLive)
             return;
         
         health -= collision.GetComponent<Bullet>().damage;
 
+
+        StartCoroutine(KnockBack());
+        
         if(health > 0)
         {
-
+            spriteController.animator.SetTrigger("Hit");
 
         }
         else{
-            Dead();
+            isLive = false;
+            coll.enabled = false;
+            rb.simulated = false;
+            spriteController.sprite.sortingOrder = 1;
+            spriteController.animator.SetBool("Dead",true);
+             GameManager.instance.GetGameMode().GetGameState().kill++;
+            GameManager.instance.GetGameMode().GetGameState().GetExp();
+            //Dead();
         }
 
     }
+
+    IEnumerator KnockBack()
+    {
+        yield return wait; //다음 하나의 물리 프레임 딜레이
+        Vector3 playerPos = target.position;
+        Vector3 dirVec = transform.position - playerPos;
+        rb.AddForce(dirVec.normalized * 3.0f, ForceMode2D.Impulse);
+
+
+    }
+
 
     void Dead()
     {
         gameObject.SetActive(false);
+        
     }
+
+
+
+
 }

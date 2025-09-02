@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 /// <summary>
 /// 캐릭터의 스프라이트 애니메이션과 방향을 제어하는 클래스입니다.
@@ -10,11 +11,13 @@ using UnityEngine;
 public class SpriteController : MonoBehaviour
 {
 
-    private SpriteRenderer sprite;
-    [HideInInspector] public Animator animator;
+    public SpriteRenderer sprite;
+    public Animator animator;
     [SerializeField] public Vector2 moveDirection;
 
     const string Key_Speed = "Speed";
+
+    public event Action OnDieEvent;
 
     void Awake()
     {
@@ -45,5 +48,10 @@ public class SpriteController : MonoBehaviour
         {
             sprite.flipX = moveDirection.x > 0 ? false : true;
         }
+    }
+
+    public void DieEvent()
+    {
+        OnDieEvent?.Invoke();
     }
 }

@@ -17,7 +17,7 @@ public class Spawner : MonoBehaviour
 
     float timer;
     int level = 0;
-    int maxLevel = 2;
+    int maxLevel = 1;
 
 
     
